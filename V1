@@ -1,7 +1,26 @@
--- WHITELIST CHECK
-local player = game:GetService("Players").LocalPlayer
+--[[
+    FemWare GUI with whitelist check
+    Only users with UserIds in whitelistedUserIds can use this GUI.
+]]
+
+-- Services
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+-- Wait for LocalPlayer
+local player = Players.LocalPlayer
+while not player do
+    Players.PlayerAdded:Wait()
+    player = Players.LocalPlayer
+end
+
+-- Debug print to confirm UserId
+print("LocalPlayer UserId:", player.UserId)
+
+-- WHITELIST
 local whitelistedUserIds = {
-    10755551317, 
+    10755551317, -- Add allowed UserIds here
 }
 
 local allowed = false
@@ -14,12 +33,13 @@ end
 
 if not allowed then
     warn("You are not whitelisted to use this GUI.")
-    return -- stops execution for non-whitelisted users
+    return -- Stop everything for non-whitelisted users
 end
 
+--=========================
+-- GUI CODE STARTS HERE
+--=========================
 local G2L = {}
-local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
 
 -- Cleanup previous GUI
 if player.PlayerGui:FindFirstChild("FemWare") then
@@ -32,7 +52,7 @@ G2L["1"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 G2L["1"].ResetOnSpawn = false
 G2L["1"].Name = "FemWare"
 
--- Image Background (behind GUI)
+-- Background Image
 G2L["imageBG"] = Instance.new("ImageLabel", player.PlayerGui)
 G2L["imageBG"].Size = UDim2.new(1,0,1,0)
 G2L["imageBG"].BackgroundTransparency = 1
@@ -47,7 +67,7 @@ G2L["2"].BackgroundColor3 = Color3.fromRGB(255,245,252)
 G2L["2"].BorderSizePixel = 0
 Instance.new("UICorner", G2L["2"]).CornerRadius = UDim.new(0,12)
 
--- Dragging
+-- Draggable
 local dragging, dragInput, dragStart, startPos
 G2L["2"].Active = true
 G2L["2"].InputBegan:Connect(function(input)
@@ -79,7 +99,7 @@ G2L["2"].InputEnded:Connect(function(input)
     end
 end)
 
--- Top 3-color Bar
+-- Top Bar Frames
 G2L["3"] = Instance.new("Frame", G2L["2"])
 G2L["3"].Size = UDim2.new(0,683,0,44)
 G2L["3"].Position = UDim2.new(0.0764,0,0.01345,0)
@@ -98,7 +118,7 @@ G2L["7"].Position = UDim2.new(0.01916,0,0.15871,0)
 G2L["7"].BackgroundColor3 = Color3.fromRGB(255,217,246)
 Instance.new("UICorner", G2L["7"])
 
--- Minimize + Close buttons (swapped positions)
+-- Minimize + Close
 local btnFrame = Instance.new("Frame", G2L["7"])
 btnFrame.Size = UDim2.new(0,40,0,16)
 btnFrame.Position = UDim2.new(1,-40,0.5,-8)
@@ -201,7 +221,7 @@ clear.MouseButton1Click:Connect(function()
     G2L["textbox"].Text = ""
 end)
 
--- Button Holder for AddButton
+-- Button Holder
 local buttonHolder = Instance.new("Frame", G2L["2"])
 buttonHolder.Size = UDim2.new(0,120,0,350)
 buttonHolder.Position = UDim2.new(0.085,0,0.13,0)
@@ -228,4 +248,5 @@ getgenv().AddButton = function(name, script)
     end)
 end
 
+-- Return GUI
 return G2L["1"], require
