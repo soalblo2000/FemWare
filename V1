@@ -196,6 +196,16 @@ G2L["textbox"].Position = UDim2.new(0.01361,0,0.01815,0)
 G2L["textbox"].BackgroundColor3 = Color3.fromRGB(255,217,246)
 Instance.new("UICorner", G2L["textbox"])
 
+-- Overlay Image (NEW)
+G2L["overlayImage"] = Instance.new("ImageLabel", G2L["2"])
+G2L["overlayImage"].Size = UDim2.new(1,0,1,0) -- covers main frame
+G2L["overlayImage"].Position = UDim2.new(0,0,0,0)
+G2L["overlayImage"].BackgroundTransparency = 1
+G2L["overlayImage"].Image = "rbxassetid://137337214779186"
+G2L["overlayImage"].ZIndex = 10 -- on top of everything
+G2L["overlayImage"].ImageTransparency = 0.4
+Instance.new("UICorner", G2L["overlayImage"]).CornerRadius = UDim.new(0,0)
+
 -- Execute Button
 local execute = Instance.new("TextButton", G2L["2"])
 execute.Size = UDim2.new(0,100,0,27)
@@ -249,17 +259,5 @@ getgenv().AddButton = function(name, script)
         end)
     end)
 end
-
--- **OVERLAY IMAGE ON TOP OF EVERYTHING**
-local overlay = Instance.new("ImageLabel", G2L["2"])
-overlay.Size = UDim2.new(1,0,1,0)
-overlay.Position = UDim2.new(0,0,0,0)
-overlay.BackgroundTransparency = 1
-overlay.Image = "rbxassetid://137337214779186"
-overlay.ImageTransparency = 0.5
-overlay.ZIndex = 999
-overlay.AnchorPoint = Vector2.new(0,0)
-overlay.ScaleType = Enum.ScaleType.Stretch
-overlay.Rotation = 0
 
 return G2L["1"], require
