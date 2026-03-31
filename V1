@@ -86,18 +86,15 @@ G2L["3"].Position = UDim2.new(0.0764,0,0.01345,0)
 G2L["3"].BackgroundColor3 = Color3.fromRGB(170,0,255)
 Instance.new("UICorner", G2L["3"])
 
--- Gradient effect
 local grad = Instance.new("UIGradient", G2L["3"])
 grad.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(255,102,255)), -- pink
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(170,0,255))    -- purple
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255,102,255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(170,0,255))
 }
 grad.Rotation = 45
 
--- Title Text
 local title = Instance.new("TextLabel", G2L["3"])
 title.Size = UDim2.new(1,0,1,0)
-title.Position = UDim2.new(0,0,0,0)
 title.BackgroundTransparency = 1
 title.Text = "FemWare"
 title.Font = Enum.Font.GothamBlack
@@ -120,7 +117,7 @@ G2L["7"].Position = UDim2.new(0.01916,0,0.15871,0)
 G2L["7"].BackgroundColor3 = Color3.fromRGB(255,217,246)
 Instance.new("UICorner", G2L["7"])
 
--- Minimize + Close buttons (swapped positions)
+-- Minimize + Close
 local btnFrame = Instance.new("Frame", G2L["7"])
 btnFrame.Size = UDim2.new(0,40,0,16)
 btnFrame.Position = UDim2.new(1,-40,0.5,-8)
@@ -139,12 +136,8 @@ close.BackgroundColor3 = Color3.fromRGB(255,0,0)
 close.Text = ""
 Instance.new("UICorner", close)
 
-mini.MouseButton1Click:Connect(function()
-    G2L["2"].Visible = false
-end)
-close.MouseButton1Click:Connect(function()
-    G2L["1"]:Destroy()
-end)
+mini.MouseButton1Click:Connect(function() G2L["2"].Visible = false end)
+close.MouseButton1Click:Connect(function() G2L["1"]:Destroy() end)
 UserInputService.InputBegan:Connect(function(input)
     if input.KeyCode == Enum.KeyCode.RightControl then
         G2L["2"].Visible = true
@@ -223,7 +216,7 @@ clear.MouseButton1Click:Connect(function()
     G2L["textbox"].Text = ""
 end)
 
--- Button Holder for AddButton
+-- Button Holder
 local buttonHolder = Instance.new("Frame", G2L["2"])
 buttonHolder.Size = UDim2.new(0,120,0,350)
 buttonHolder.Position = UDim2.new(0.085,0,0.13,0)
@@ -231,8 +224,7 @@ buttonHolder.BackgroundTransparency = 1
 local layout = Instance.new("UIListLayout", buttonHolder)
 layout.Padding = UDim.new(0,5)
 
--- GLOBAL AddButton function (FIXED)
--- Usage: AddButton("Button Name", "loadstring('https://example.com/script.lua')()")
+-- GLOBAL AddButton function (fixed)
 getgenv().AddButton = function(name, script)
     if not buttonHolder then return end
     local btn = Instance.new("TextButton")
@@ -242,20 +234,17 @@ getgenv().AddButton = function(name, script)
     btn.BackgroundColor3 = Color3.fromRGB(255,190,242)
     btn.Parent = buttonHolder
     Instance.new("UICorner", btn)
-
     btn.MouseButton1Click:Connect(function()
-        if script then
-            pcall(function()
-                loadstring(script)()
-            end)
-        end
+        pcall(function()
+            loadstring(script)()
+        end)
     end)
 end
 
--- Overlay Image (RIGHT SIDE, smaller, slightly transparent)
+-- Overlay Image (right side, full height, slightly less than half width)
 G2L["overlayImg"] = Instance.new("ImageLabel", G2L["2"])
-G2L["overlayImg"].Size = UDim2.new(0, 200, 0, 200) -- smaller size
-G2L["overlayImg"].Position = UDim2.new(0.72, 0, 0.15, 0) -- right side
+G2L["overlayImg"].Size = UDim2.new(0.48, 0, 1, 0)
+G2L["overlayImg"].Position = UDim2.new(0.52, 0, 0, 0)
 G2L["overlayImg"].BackgroundTransparency = 1
 G2L["overlayImg"].Image = "rbxassetid://92027709462701"
 G2L["overlayImg"].ZIndex = 10
