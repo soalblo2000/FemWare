@@ -1,6 +1,23 @@
-local G2L = {}
-
+-- WHITELIST CHECK
 local player = game:GetService("Players").LocalPlayer
+local whitelistedUserIds = {
+    12345678, 
+}
+
+local allowed = false
+for _, id in ipairs(whitelistedUserIds) do
+    if player.UserId == id then
+        allowed = true
+        break
+    end
+end
+
+if not allowed then
+    warn("You are not whitelisted to use this GUI.")
+    return -- stops execution for non-whitelisted users
+end
+
+local G2L = {}
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
@@ -15,7 +32,7 @@ G2L["1"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 G2L["1"].ResetOnSpawn = false
 G2L["1"].Name = "FemWare"
 
--- Image (background, behind main GUI)
+-- Image Background (behind GUI)
 G2L["imageBG"] = Instance.new("ImageLabel", player.PlayerGui)
 G2L["imageBG"].Size = UDim2.new(1,0,1,0)
 G2L["imageBG"].BackgroundTransparency = 1
@@ -30,7 +47,7 @@ G2L["2"].BackgroundColor3 = Color3.fromRGB(255,245,252)
 G2L["2"].BorderSizePixel = 0
 Instance.new("UICorner", G2L["2"]).CornerRadius = UDim.new(0,12)
 
--- Draggable
+-- Dragging
 local dragging, dragInput, dragStart, startPos
 G2L["2"].Active = true
 G2L["2"].InputBegan:Connect(function(input)
@@ -112,7 +129,7 @@ UserInputService.InputBegan:Connect(function(input)
     end
 end)
 
--- Image Frame (top left, above main frame)
+-- Image Frame (top left)
 G2L["imageFrame"] = Instance.new("Frame", G2L["2"])
 G2L["imageFrame"].Size = UDim2.new(0,44,0,44)
 G2L["imageFrame"].Position = UDim2.new(0.00819,0,0.01345,0)
@@ -184,15 +201,16 @@ clear.MouseButton1Click:Connect(function()
     G2L["textbox"].Text = ""
 end)
 
--- Button Holder (for AddButton)
+-- Button Holder for AddButton
 local buttonHolder = Instance.new("Frame", G2L["2"])
 buttonHolder.Size = UDim2.new(0,120,0,350)
-buttonHolder.Position = UDim2.new(0.085,0,0.13,0) -- adjust left/right
+buttonHolder.Position = UDim2.new(0.085,0,0.13,0)
 buttonHolder.BackgroundTransparency = 1
 local layout = Instance.new("UIListLayout", buttonHolder)
 layout.Padding = UDim.new(0,5)
 
--- GLOBAL AddButton
+-- GLOBAL AddButton function
+-- Usage: AddButton("Button Name", "loadstring('https://example.com/script.lua')()")
 getgenv().AddButton = function(name, script)
     if not buttonHolder then return end
     local btn = Instance.new("TextButton")
