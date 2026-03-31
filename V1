@@ -4,51 +4,50 @@ local player = game:GetService("Players").LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
--- Cleanup previous GUI
+-- Destroy old GUI
 if player.PlayerGui:FindFirstChild("FemWare") then
     player.PlayerGui.FemWare:Destroy()
 end
 
 -- ScreenGui
-G2L["1"] = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-G2L["1"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-G2L["1"].ResetOnSpawn = false
-G2L["1"].Name = "FemWare"
-
--- Image (background, behind main GUI)
-G2L["imageBG"] = Instance.new("ImageLabel", player.PlayerGui)
-G2L["imageBG"].Size = UDim2.new(1,0,1,0)
-G2L["imageBG"].BackgroundTransparency = 1
-G2L["imageBG"].Image = "rbxassetid://100809452506451" -- your image
-G2L["imageBG"].ZIndex = 0
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "FemWare"
+ScreenGui.Parent = player.PlayerGui
+ScreenGui.ResetOnSpawn = false
 
 -- Main Frame
-G2L["2"] = Instance.new("Frame", G2L["1"])
-G2L["2"].Size = UDim2.new(0,748,0,468)
-G2L["2"].Position = UDim2.new(0.27566,0,0.21816,0)
-G2L["2"].BackgroundColor3 = Color3.fromRGB(255,245,252)
-G2L["2"].BorderSizePixel = 0
-Instance.new("UICorner", G2L["2"]).CornerRadius = UDim.new(0,12)
+local MainFrame = Instance.new("Frame")
+MainFrame.Parent = ScreenGui
+MainFrame.Size = UDim2.new(0,748,0,468)
+MainFrame.Position = UDim2.new(0.275,0,0.218,0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(255,245,252)
+MainFrame.BorderSizePixel = 0
+Instance.new("UICorner", MainFrame)
 
--- Draggable
-local dragging, dragInput, dragStart, startPos
-G2L["2"].Active = true
-G2L["2"].InputBegan:Connect(function(input)
+-- Dragging
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+MainFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
         dragStart = input.Position
-        startPos = G2L["2"].Position
+        startPos = MainFrame.Position
     end
 end)
-G2L["2"].InputChanged:Connect(function(input)
+
+MainFrame.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement then
         dragInput = input
     end
 end)
+
 RunService.RenderStepped:Connect(function()
     if dragging and dragInput then
         local delta = dragInput.Position - dragStart
-        G2L["2"].Position = UDim2.new(
+        MainFrame.Position = UDim2.new(
             startPos.X.Scale,
             startPos.X.Offset + delta.X,
             startPos.Y.Scale,
@@ -56,165 +55,138 @@ RunService.RenderStepped:Connect(function()
         )
     end
 end)
-G2L["2"].InputEnded:Connect(function(input)
+
+MainFrame.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = false
     end
 end)
 
--- Top 3-color Bar
-G2L["3"] = Instance.new("Frame", G2L["2"])
-G2L["3"].Size = UDim2.new(0,683,0,44)
-G2L["3"].Position = UDim2.new(0.0764,0,0.01345,0)
-G2L["3"].BackgroundColor3 = Color3.fromRGB(255,157,239)
-Instance.new("UICorner", G2L["3"])
+-- Top Bar
+local Top = Instance.new("Frame", MainFrame)
+Top.Size = UDim2.new(0,683,0,44)
+Top.Position = UDim2.new(0.076,0,0.013,0)
+Top.BackgroundColor3 = Color3.fromRGB(255,157,239)
+Instance.new("UICorner", Top)
 
-G2L["5"] = Instance.new("Frame", G2L["3"])
-G2L["5"].Size = UDim2.new(0,667,0,28)
-G2L["5"].Position = UDim2.new(0.01108,0,0.17896,0)
-G2L["5"].BackgroundColor3 = Color3.fromRGB(255,190,242)
-Instance.new("UICorner", G2L["5"])
+local Top2 = Instance.new("Frame", Top)
+Top2.Size = UDim2.new(0,667,0,28)
+Top2.Position = UDim2.new(0.011,0,0.17,0)
+Top2.BackgroundColor3 = Color3.fromRGB(255,190,242)
+Instance.new("UICorner", Top2)
 
-G2L["7"] = Instance.new("Frame", G2L["5"])
-G2L["7"].Size = UDim2.new(0,641,0,19)
-G2L["7"].Position = UDim2.new(0.01916,0,0.15871,0)
-G2L["7"].BackgroundColor3 = Color3.fromRGB(255,217,246)
-Instance.new("UICorner", G2L["7"])
+local Top3 = Instance.new("Frame", Top2)
+Top3.Size = UDim2.new(0,641,0,19)
+Top3.Position = UDim2.new(0.019,0,0.15,0)
+Top3.BackgroundColor3 = Color3.fromRGB(255,217,246)
+Instance.new("UICorner", Top3)
 
--- Minimize + Close buttons (swapped positions)
-local btnFrame = Instance.new("Frame", G2L["7"])
-btnFrame.Size = UDim2.new(0,40,0,16)
-btnFrame.Position = UDim2.new(1,-40,0.5,-8)
-btnFrame.BackgroundTransparency = 1
+-- Close Button
+local Close = Instance.new("TextButton", Top3)
+Close.Size = UDim2.new(0,16,0,16)
+Close.Position = UDim2.new(1,-18,0,1)
+Close.BackgroundColor3 = Color3.fromRGB(255,0,0)
+Close.Text = ""
+Instance.new("UICorner", Close)
 
-local mini = Instance.new("TextButton", btnFrame)
-mini.Size = UDim2.new(0,16,0,16)
-mini.BackgroundColor3 = Color3.fromRGB(255,255,0)
-mini.Text = ""
-Instance.new("UICorner", mini)
-
-local close = Instance.new("TextButton", btnFrame)
-close.Size = UDim2.new(0,16,0,16)
-close.Position = UDim2.new(0,20,0,0)
-close.BackgroundColor3 = Color3.fromRGB(255,0,0)
-close.Text = ""
-Instance.new("UICorner", close)
-
-mini.MouseButton1Click:Connect(function()
-    G2L["2"].Visible = false
+Close.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
 end)
-close.MouseButton1Click:Connect(function()
-    G2L["1"]:Destroy()
+
+-- Minimize
+local Min = Instance.new("TextButton", Top3)
+Min.Size = UDim2.new(0,16,0,16)
+Min.Position = UDim2.new(1,-38,0,1)
+Min.BackgroundColor3 = Color3.fromRGB(255,255,0)
+Min.Text = ""
+Instance.new("UICorner", Min)
+
+Min.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
 end)
+
 UserInputService.InputBegan:Connect(function(input)
     if input.KeyCode == Enum.KeyCode.RightControl then
-        G2L["2"].Visible = true
+        MainFrame.Visible = true
     end
 end)
 
--- Image Frame (top left, above main frame)
-G2L["imageFrame"] = Instance.new("Frame", G2L["2"])
-G2L["imageFrame"].Size = UDim2.new(0,44,0,44)
-G2L["imageFrame"].Position = UDim2.new(0.00819,0,0.01345,0)
-G2L["imageFrame"].BackgroundColor3 = Color3.fromRGB(255,157,239)
-Instance.new("UICorner", G2L["imageFrame"])
-
-local img = Instance.new("ImageLabel", G2L["imageFrame"])
-img.Size = UDim2.new(0,36,0,36)
-img.Position = UDim2.new(0.09091,0,0.08806,0)
-img.BackgroundTransparency = 1
-img.Image = "rbxassetid://100809452506451"
-Instance.new("UICorner", img)
-
--- Side Frame
-G2L["side"] = Instance.new("Frame", G2L["2"])
-G2L["side"].Size = UDim2.new(0,402,0,44)
-G2L["side"].Position = UDim2.new(-0.23217,0,0.50273,0)
-G2L["side"].Rotation = 90
-G2L["side"].BackgroundColor3 = Color3.fromRGB(255,157,239)
-Instance.new("UICorner", G2L["side"])
-
 -- Textbox Frame
-G2L["textboxFrame"] = Instance.new("Frame", G2L["2"])
-G2L["textboxFrame"].Size = UDim2.new(0,544,0,400)
-G2L["textboxFrame"].Position = UDim2.new(0.26094,0,0.12171,0)
-G2L["textboxFrame"].BackgroundColor3 = Color3.fromRGB(255,157,239)
-Instance.new("UICorner", G2L["textboxFrame"])
+local TextFrame = Instance.new("Frame", MainFrame)
+TextFrame.Size = UDim2.new(0,544,0,400)
+TextFrame.Position = UDim2.new(0.26,0,0.12,0)
+TextFrame.BackgroundColor3 = Color3.fromRGB(255,157,239)
+Instance.new("UICorner", TextFrame)
 
-local inner = Instance.new("Frame", G2L["textboxFrame"])
-inner.Size = UDim2.new(0,523,0,391)
-inner.Position = UDim2.new(0.01879,0,0.02041,0)
-inner.BackgroundColor3 = Color3.fromRGB(255,190,242)
-Instance.new("UICorner", inner)
+local Inner = Instance.new("Frame", TextFrame)
+Inner.Size = UDim2.new(0,523,0,391)
+Inner.Position = UDim2.new(0.018,0,0.02,0)
+Inner.BackgroundColor3 = Color3.fromRGB(255,190,242)
+Instance.new("UICorner", Inner)
 
-G2L["textbox"] = Instance.new("TextBox", inner)
-G2L["textbox"].MultiLine = true
-G2L["textbox"].ClearTextOnFocus = false
-G2L["textbox"].TextXAlignment = Enum.TextXAlignment.Left
-G2L["textbox"].TextYAlignment = Enum.TextYAlignment.Top
-G2L["textbox"].Size = UDim2.new(0,509,0,334)
-G2L["textbox"].Position = UDim2.new(0.01361,0,0.01815,0)
-G2L["textbox"].BackgroundColor3 = Color3.fromRGB(255,217,246)
-Instance.new("UICorner", G2L["textbox"])
+local TextBox = Instance.new("TextBox", Inner)
+TextBox.Size = UDim2.new(0,509,0,334)
+TextBox.Position = UDim2.new(0.013,0,0.018,0)
+TextBox.MultiLine = true
+TextBox.ClearTextOnFocus = false
+TextBox.TextXAlignment = Enum.TextXAlignment.Left
+TextBox.TextYAlignment = Enum.TextYAlignment.Top
+TextBox.BackgroundColor3 = Color3.fromRGB(255,217,246)
+Instance.new("UICorner", TextBox)
 
--- Execute Button
-local execute = Instance.new("TextButton", G2L["2"])
-execute.Size = UDim2.new(0,100,0,27)
-execute.Position = UDim2.new(0.28877,0,0.89605,0)
-execute.Text = "Execute"
-execute.BackgroundColor3 = Color3.fromRGB(255,217,246)
-Instance.new("UICorner", execute)
+-- Execute
+local Execute = Instance.new("TextButton", MainFrame)
+Execute.Size = UDim2.new(0,100,0,27)
+Execute.Position = UDim2.new(0.28,0,0.89,0)
+Execute.Text = "Execute"
+Execute.BackgroundColor3 = Color3.fromRGB(255,217,246)
+Instance.new("UICorner", Execute)
 
-execute.MouseButton1Click:Connect(function()
-    local scriptText = G2L["textbox"].Text
+Execute.MouseButton1Click:Connect(function()
     pcall(function()
-        loadstring(scriptText)()
+        loadstring(TextBox.Text)()
     end)
 end)
 
--- Clear Button
-local clear = Instance.new("TextButton", G2L["2"])
-clear.Size = UDim2.new(0,100,0,27)
-clear.Position = UDim2.new(0.43316,0,0.89605,0)
-clear.Text = "Clear"
-clear.BackgroundColor3 = Color3.fromRGB(255,217,246)
-Instance.new("UICorner", clear)
+-- Clear
+local Clear = Instance.new("TextButton", MainFrame)
+Clear.Size = UDim2.new(0,100,0,27)
+Clear.Position = UDim2.new(0.43,0,0.89,0)
+Clear.Text = "Clear"
+Clear.BackgroundColor3 = Color3.fromRGB(255,217,246)
+Instance.new("UICorner", Clear)
 
-clear.MouseButton1Click:Connect(function()
-    G2L["textbox"].Text = ""
+Clear.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
 end)
 
--- Scrollable Button Holder
-local scrollHolder = Instance.new("ScrollingFrame", G2L["2"])
-scrollHolder.Size = UDim2.new(0,120,0,350)
-scrollHolder.Position = UDim2.new(0.085,0,0.13,0)
-scrollHolder.BackgroundTransparency = 1
-scrollHolder.CanvasSize = UDim2.new(0,0,0,0)
-scrollHolder.ScrollBarThickness = 6
+-- Scroll buttons
+local Scroll = Instance.new("ScrollingFrame", MainFrame)
+Scroll.Size = UDim2.new(0,120,0,350)
+Scroll.Position = UDim2.new(0.03,0,0.13,0)
+Scroll.BackgroundTransparency = 1
+Scroll.ScrollBarThickness = 5
 
-local layout = Instance.new("UIListLayout", scrollHolder)
-layout.Padding = UDim.new(0,5)
-layout.SortOrder = Enum.SortOrder.LayoutOrder
+local Layout = Instance.new("UIListLayout", Scroll)
+Layout.Padding = UDim.new(0,5)
 
--- GLOBAL AddButton
+-- GLOBAL ADD BUTTON
 getgenv().AddButton = function(name, script)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1,0,0,25)
-    btn.Text = name
-    btn.TextSize = 13
-    btn.BackgroundColor3 = Color3.fromRGB(255,190,242)
-    btn.Parent = scrollHolder
-    Instance.new("UICorner", btn)
+    local Button = Instance.new("TextButton")
+    Button.Size = UDim2.new(1,0,0,25)
+    Button.Text = name
+    Button.TextSize = 13
+    Button.BackgroundColor3 = Color3.fromRGB(255,190,242)
+    Button.Parent = Scroll
+    Instance.new("UICorner", Button)
 
-    btn.MouseButton1Click:Connect(function()
+    Button.MouseButton1Click:Connect(function()
         pcall(function()
             loadstring(script)()
         end)
     end)
 
-    -- Update CanvasSize
-    local totalSize = layout.AbsoluteContentSize.Y + 5
-    scrollHolder.CanvasSize = UDim2.new(0,0,0,totalSize)
+    Scroll.CanvasSize = UDim2.new(0,0,0,Layout.AbsoluteContentSize.Y + 10)
 end
 
-return G2L["1"], require
+return ScreenGui
