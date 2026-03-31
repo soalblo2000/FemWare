@@ -1,28 +1,11 @@
---[[
-    FemWare GUI with whitelist check
-    Only users with UserIds in whitelistedUserIds can use this GUI.
-]]
-
--- Services
-local Players = game:GetService("Players")
+local player = game:GetService("Players").LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
--- Wait for LocalPlayer
-local player = Players.LocalPlayer
-while not player do
-    Players.PlayerAdded:Wait()
-    player = Players.LocalPlayer
-end
-
--- Debug print to confirm UserId
-print("LocalPlayer UserId:", player.UserId)
-
--- WHITELIST
+-- WHITELIST CHECK
 local whitelistedUserIds = {
-    10755551317, -- Add allowed UserIds here
+    10755551317, -- Add your allowed UserIDs here
 }
-
 local allowed = false
 for _, id in ipairs(whitelistedUserIds) do
     if player.UserId == id then
@@ -33,18 +16,15 @@ end
 
 if not allowed then
     warn("You are not whitelisted to use this GUI.")
-    return -- Stop everything for non-whitelisted users
+    return
 end
-
---=========================
--- GUI CODE STARTS HERE
---=========================
-local G2L = {}
 
 -- Cleanup previous GUI
 if player.PlayerGui:FindFirstChild("FemWare") then
     player.PlayerGui.FemWare:Destroy()
 end
+
+local G2L = {}
 
 -- ScreenGui
 G2L["1"] = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
@@ -52,11 +32,11 @@ G2L["1"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 G2L["1"].ResetOnSpawn = false
 G2L["1"].Name = "FemWare"
 
--- Background Image
+-- Image Background (behind GUI)
 G2L["imageBG"] = Instance.new("ImageLabel", player.PlayerGui)
 G2L["imageBG"].Size = UDim2.new(1,0,1,0)
 G2L["imageBG"].BackgroundTransparency = 1
-G2L["imageBG"].Image = "rbxassetid://100809452506451" -- your image
+G2L["imageBG"].Image = "rbxassetid://100809452506451"
 G2L["imageBG"].ZIndex = 0
 
 -- Main Frame
@@ -67,7 +47,7 @@ G2L["2"].BackgroundColor3 = Color3.fromRGB(255,245,252)
 G2L["2"].BorderSizePixel = 0
 Instance.new("UICorner", G2L["2"]).CornerRadius = UDim.new(0,12)
 
--- Draggable
+-- Dragging
 local dragging, dragInput, dragStart, startPos
 G2L["2"].Active = true
 G2L["2"].InputBegan:Connect(function(input)
@@ -99,13 +79,35 @@ G2L["2"].InputEnded:Connect(function(input)
     end
 end)
 
--- Top Bar Frames
+-- Top Bar with Title "FemWare"
 G2L["3"] = Instance.new("Frame", G2L["2"])
 G2L["3"].Size = UDim2.new(0,683,0,44)
 G2L["3"].Position = UDim2.new(0.0764,0,0.01345,0)
-G2L["3"].BackgroundColor3 = Color3.fromRGB(255,157,239)
+G2L["3"].BackgroundColor3 = Color3.fromRGB(170,0,255)
 Instance.new("UICorner", G2L["3"])
 
+-- Gradient effect
+local grad = Instance.new("UIGradient", G2L["3"])
+grad.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255,102,255)), -- pink
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(170,0,255))    -- purple
+}
+grad.Rotation = 45
+
+-- Title Text
+local title = Instance.new("TextLabel", G2L["3"])
+title.Size = UDim2.new(1,0,1,0)
+title.Position = UDim2.new(0,0,0,0)
+title.BackgroundTransparency = 1
+title.Text = "FemWare"
+title.Font = Enum.Font.GothamBlack
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.TextScaled = true
+title.RichText = true
+title.TextStrokeTransparency = 0.7
+title.TextStrokeColor3 = Color3.fromRGB(0,0,0)
+
+-- Top frames inside bar
 G2L["5"] = Instance.new("Frame", G2L["3"])
 G2L["5"].Size = UDim2.new(0,667,0,28)
 G2L["5"].Position = UDim2.new(0.01108,0,0.17896,0)
@@ -118,7 +120,7 @@ G2L["7"].Position = UDim2.new(0.01916,0,0.15871,0)
 G2L["7"].BackgroundColor3 = Color3.fromRGB(255,217,246)
 Instance.new("UICorner", G2L["7"])
 
--- Minimize + Close
+-- Minimize + Close buttons (swapped positions)
 local btnFrame = Instance.new("Frame", G2L["7"])
 btnFrame.Size = UDim2.new(0,40,0,16)
 btnFrame.Position = UDim2.new(1,-40,0.5,-8)
@@ -149,7 +151,7 @@ UserInputService.InputBegan:Connect(function(input)
     end
 end)
 
--- Image Frame (top left)
+-- Image Frame
 G2L["imageFrame"] = Instance.new("Frame", G2L["2"])
 G2L["imageFrame"].Size = UDim2.new(0,44,0,44)
 G2L["imageFrame"].Position = UDim2.new(0.00819,0,0.01345,0)
@@ -221,7 +223,7 @@ clear.MouseButton1Click:Connect(function()
     G2L["textbox"].Text = ""
 end)
 
--- Button Holder
+-- Button Holder for AddButton
 local buttonHolder = Instance.new("Frame", G2L["2"])
 buttonHolder.Size = UDim2.new(0,120,0,350)
 buttonHolder.Position = UDim2.new(0.085,0,0.13,0)
@@ -248,5 +250,4 @@ getgenv().AddButton = function(name, script)
     end)
 end
 
--- Return GUI
 return G2L["1"], require
