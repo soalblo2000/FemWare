@@ -222,8 +222,8 @@ end)
 G2L["overlay"] = Instance.new("ImageLabel", G2L["2"])
 G2L["overlay"].Size = UDim2.new(0,814,0,456)
 G2L["overlay"].Position = UDim2.new(0.06684,0,0,0)
-G2L["overlay"].BackgroundTransparency = 0.9
-G2L["overlay"].Image = "rbxassetid://137337214779186"
+G2L["overlay"].BackgroundTransparency = 1
+G2L["overlay"].Image = "rbxassetid://92027709462701"
 G2L["overlay"].ZIndex = 10
 
 return G2L["1"], require
