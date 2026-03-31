@@ -187,7 +187,7 @@ end)
 -- Button Holder (for AddButton)
 local buttonHolder = Instance.new("Frame", G2L["2"])
 buttonHolder.Size = UDim2.new(0,120,0,350)
-buttonHolder.Position = UDim2.new(0.03,0,0.13,0) -- adjust left/right
+buttonHolder.Position = UDim2.new(0.085,0,0.13,0) -- adjust left/right
 buttonHolder.BackgroundTransparency = 1
 local layout = Instance.new("UIListLayout", buttonHolder)
 layout.Padding = UDim.new(0,5)
