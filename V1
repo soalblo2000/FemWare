@@ -184,26 +184,23 @@ clear.MouseButton1Click:Connect(function()
     G2L["textbox"].Text = ""
 end)
 
--- Scrollable Button Holder
-local scrollHolder = Instance.new("ScrollingFrame", G2L["2"])
-scrollHolder.Size = UDim2.new(0,120,0,350)
-scrollHolder.Position = UDim2.new(0.03,0,0.13,0)
-scrollHolder.BackgroundTransparency = 1
-scrollHolder.CanvasSize = UDim2.new(0,0,0,0)
-scrollHolder.ScrollBarThickness = 6
-
-local layout = Instance.new("UIListLayout", scrollHolder)
+-- Button Holder (for AddButton)
+local buttonHolder = Instance.new("Frame", G2L["2"])
+buttonHolder.Size = UDim2.new(0,120,0,350)
+buttonHolder.Position = UDim2.new(0.03,0,0.13,0) -- adjust left/right
+buttonHolder.BackgroundTransparency = 1
+local layout = Instance.new("UIListLayout", buttonHolder)
 layout.Padding = UDim.new(0,5)
-layout.SortOrder = Enum.SortOrder.LayoutOrder
 
 -- GLOBAL AddButton
 getgenv().AddButton = function(name, script)
+    if not buttonHolder then return end
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1,0,0,25)
     btn.Text = name
     btn.TextSize = 13
     btn.BackgroundColor3 = Color3.fromRGB(255,190,242)
-    btn.Parent = scrollHolder
+    btn.Parent = buttonHolder
     Instance.new("UICorner", btn)
 
     btn.MouseButton1Click:Connect(function()
@@ -211,10 +208,6 @@ getgenv().AddButton = function(name, script)
             loadstring(script)()
         end)
     end)
-
-    -- Update CanvasSize
-    local totalSize = layout.AbsoluteContentSize.Y + 5
-    scrollHolder.CanvasSize = UDim2.new(0,0,0,totalSize)
 end
 
 return G2L["1"], require
