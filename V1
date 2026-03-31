@@ -6,6 +6,7 @@ local StarterGui = game:GetService("StarterGui")
 -- WHITELIST CHECK
 local whitelistedUserIds = {
     10755551317, -- Add your allowed UserIDs here
+    9488284508
 }
 local allowed = false
 for _, id in ipairs(whitelistedUserIds) do
