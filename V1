@@ -1,6 +1,7 @@
 local player = game:GetService("Players").LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
 
 -- WHITELIST CHECK
 local whitelistedUserIds = {
@@ -14,7 +15,19 @@ for _, id in ipairs(whitelistedUserIds) do
     end
 end
 
-if not allowed then
+-- Send notification about whitelist status
+if allowed then
+    StarterGui:SetCore("SendNotification", {
+        Title = "Whitelist Status",
+        Text = "You are whitelisted to use this GUI!",
+        Duration = 5
+    })
+else
+    StarterGui:SetCore("SendNotification", {
+        Title = "Whitelist Status",
+        Text = "You are NOT whitelisted to use this GUI.",
+        Duration = 5
+    })
     warn("You are not whitelisted to use this GUI.")
     return
 end
@@ -223,7 +236,7 @@ clear.MouseButton1Click:Connect(function()
     G2L["textbox"].Text = ""
 end)
 
--- Button Holder
+-- Button Holder for AddButton
 local buttonHolder = Instance.new("Frame", G2L["2"])
 buttonHolder.Size = UDim2.new(0,120,0,350)
 buttonHolder.Position = UDim2.new(0.085,0,0.13,0)
@@ -231,16 +244,15 @@ buttonHolder.BackgroundTransparency = 1
 local layout = Instance.new("UIListLayout", buttonHolder)
 layout.Padding = UDim.new(0,5)
 
--- AddButton function fixed
+-- GLOBAL AddButton function
 getgenv().AddButton = function(name, script)
-    if not buttonHolder then return end
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1,0,0,25)
     btn.Text = name
     btn.TextSize = 13
     btn.BackgroundColor3 = Color3.fromRGB(255,190,242)
-    btn.Parent = buttonHolder
     Instance.new("UICorner", btn)
+    btn.Parent = buttonHolder
 
     btn.MouseButton1Click:Connect(function()
         pcall(function()
@@ -249,13 +261,13 @@ getgenv().AddButton = function(name, script)
     end)
 end
 
--- Overlay Image (on the right inside main frame)
-G2L["24"] = Instance.new("ImageLabel", G2L["2"])
-G2L["24"].BorderSizePixel = 0
-G2L["24"].BackgroundColor3 = Color3.fromRGB(255,255,255)
-G2L["24"].Image = "rbxassetid://92027709462701"
-G2L["24"].Size = UDim2.new(0, 380, 0, 370)
-G2L["24"].Position = UDim2.new(0.49, 0, 0.025, 0) -- further right inside frame
-G2L["24"].BackgroundTransparency = 1
+-- Overlay Image (adjusted: bigger, further right and down)
+G2L["overlay"] = Instance.new("ImageLabel", G2L["2"])
+G2L["overlay"].BorderSizePixel = 0
+G2L["overlay"].BackgroundColor3 = Color3.fromRGB(255,255,255)
+G2L["overlay"].Image = "rbxassetid://92003186031023"
+G2L["overlay"].Size = UDim2.new(0, 420, 0, 400) -- bigger
+G2L["overlay"].Position = UDim2.new(0.43,0,0.1,0) -- further right and down
+G2L["overlay"].BackgroundTransparency = 1
 
 return G2L["1"], require
